@@ -15,15 +15,16 @@
   {:black-empty "#"
    :white-empty "_"})
 
+(defn is-in? [e coll]
+  (boolean (reduce #(or %1 %2) false (map #(= e %) coll))))
+
 (defn coloured-empty
   [row col]
-  (let [row-even? (reduce #(or %1 %2) false (map #(= row %) [:2 :4 :6 :8]))
-        in-even-blacks? (reduce #(or %1 %2) false (map #(= col %) [:b :d :f :h]))]
-    (if (and row-even? in-even-blacks?)
+  (let [row-even? (is-in? row [:2 :4 :6 :8])
+        in-even-blacks? (is-in? col [:b :d :f :h])]
+    (if (= row-even? in-even-blacks?)
       :black-empty
-      (if (not (or row-even? in-even-blacks?))
-        :black-empty
-        :white-empty))))
+      :white-empty)))
 
 (defn visualise-piece
   [board row col]
