@@ -43,7 +43,7 @@
   (doall
    (map
     #(println %1 (clojure.string/join " " (visualise-row board %1)))
-    row-keys)))
+    (reverse row-keys))))
 
 (defn -main
   "I don't do a whole lot ... yet."
