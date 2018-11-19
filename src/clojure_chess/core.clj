@@ -38,13 +38,14 @@
 
 (defn print-board
   [board]
-  (do
-    (println " " (apply str col-keys))
-    (map
-     #(println %1 (clojure.string/join " " (visualise-row board %1)))
-     row-keys)))
+  (println " " (apply str col-keys))
+  (doall
+   (map
+    #(println %1 (clojure.string/join " " (visualise-row board %1)))
+    row-keys)))
 
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (print-board empty-board))
+  (print-board empty-board)
+  0)
