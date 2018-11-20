@@ -15,13 +15,10 @@
   {:black-empty "#"
    :white-empty "_"})
 
-(defn is-in? [e coll]
-  (boolean (reduce #(or %1 %2) false (map #(= e %) coll))))
-
 (defn coloured-empty
   [row col]
-  (let [row-even? (is-in? row [:2 :4 :6 :8])
-        in-even-blacks? (is-in? col [:b :d :f :h])]
+  (let [row-even? (boolean (some #{:2 :4 :6 :8} [row]))
+        in-even-blacks? (boolean (some #{:b :d :f :h} [col]))]
     (if (= row-even? in-even-blacks?)
       :black-empty
       :white-empty)))
