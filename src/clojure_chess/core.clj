@@ -1,19 +1,38 @@
 (ns clojure-chess.core
+  (require [clojure-chess.board :refer :all])
   (:gen-class))
-
-(def col-keys
-  [:a :b :c :d :e :f :g :h])
-(def row-keys
-  [:1 :2 :3 :4 :5 :6 :7 :8])
-
-(def empty-row (reduce #(assoc %1 %2 :empty) {} col-keys))
-
-(def empty-board
-  (reduce #(assoc %1 %2 empty-row) {} row-keys))
 
 (def piece-visuals
   {:black-empty "#"
-   :white-empty "_"})
+   :white-empty "_"
+   :black-rook   "r"
+   :black-knight "n"
+   :black-bishop "b"
+   :black-queen  "q"
+   :black-king   "k"
+   :black-pawn   "p"
+   :white-rook   "R"
+   :white-knight "N"
+   :white-bishop "B"
+   :white-queen  "Q"
+   :white-king   "K"
+   :white-pawn   "P"})
+
+(def piece-emoji
+  {:black-empty "⬛"
+   :white-empty "⬜"
+   :white-rook   "♖"
+   :white-knight "♘"
+   :white-bishop "♗"
+   :white-queen  "♕"
+   :white-king   "♔"
+   :white-pawn   "♙"
+   :black-rook   "♜"
+   :black-knight "♞"
+   :black-bishop "♝"
+   :black-queen  "♛"
+   :black-king   "♚"
+   :black-pawn   "♟"})
 
 (defn coloured-empty
   [row col]
@@ -26,7 +45,7 @@
 (defn visualise-piece
   [board row col]
   (let [piece (get-in board [row col])]
-    (piece-visuals (if (= piece :empty)
+    (piece-emoji (if (= piece :empty)
                      (coloured-empty row col)
                      piece))))
 
@@ -45,5 +64,5 @@
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (print-board empty-board)
+  (print-board initial-board)
   0)
