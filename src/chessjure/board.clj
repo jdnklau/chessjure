@@ -1,4 +1,4 @@
-(ns clojure-chess.board)
+(ns chessjure.board)
 
 (def col-keys
   [:a :b :c :d :e :f :g :h])

@@ -1,6 +1,6 @@
-(ns clojure-chess.core-test
+(ns chessjure.core-test
   (:require [clojure.test :refer :all]
-            [clojure-chess.core :refer :all]))
+            [chessjure.core :refer :all]))
 
 (deftest black-white-fields
   (testing "Tests whether the black and white empty fields on the board are labelled correctly"

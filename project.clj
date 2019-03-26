@@ -1,7 +1,6 @@
-(defproject clojure-chess "0.1.0-SNAPSHOT"
+(defproject chessjure "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
-  :url "http://example.com/FIXME"
   :dependencies [[org.clojure/clojure "1.8.0"]]
-  :main ^:skip-aot clojure-chess.core
+  :main ^:skip-aot chessjure.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
