@@ -21,6 +21,11 @@
   [board piece row col]
   (assoc-in board [row col] piece))
 
+(defn board-get
+  "Returns the given piece from the board, or nil if position is empty."
+  [board row col]
+  (get-in board [row col]))
+
 (defn- position-pawns
   [board]
   (let
