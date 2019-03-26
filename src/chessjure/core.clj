@@ -1,5 +1,5 @@
 (ns chessjure.core
-  (require [chessjure.board :refer :all])
+  (:require [chessjure.board :refer :all])
   (:gen-class))
 
 (def piece-visuals
