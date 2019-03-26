@@ -19,8 +19,8 @@
    :white-pawn   "P"})
 
 (def piece-emoji
-  {:black-empty "⬛"
-   :white-empty "⬜"
+  {:black-empty "◼️"
+   :white-empty "◻️"
    :white-rook   "♖"
    :white-knight "♘"
    :white-bishop "♗"
@@ -46,8 +46,8 @@
   [board row col]
   (let [piece (get-in board [row col])]
     (piece-emoji (if (= piece :empty)
-                     (coloured-empty row col)
-                     piece))))
+                   (coloured-empty row col)
+                   piece))))
 
 (defn visualise-row
   [board row]
@@ -56,10 +56,8 @@
 (defn print-board
   [board]
   (println " " (apply str col-keys))
-  (doall
-   (map
-    #(println %1 (clojure.string/join " " (visualise-row board %1)))
-    (reverse row-keys))))
+  (doseq [row (reverse row-keys)]
+    (println row (clojure.string/join " " (visualise-row board row)))))
 
 (defn -main
   "I don't do a whole lot ... yet."
