@@ -1,15 +1,10 @@
-(ns chessjure.board)
+(ns chessjure.board
+  (:require [chessjure.pieces :refer :all]))
 
 (def col-keys
   [:a :b :c :d :e :f :g :h])
 (def row-keys
   [:1 :2 :3 :4 :5 :6 :7 :8])
-
-(def black-pieces
-  [:black-rook :black-knight :black-bishop :black-queen :black-king :black-pawn])
-
-(def white-pieces
-  [:white-rook :white-knight :white-bishop :white-queen :white-king :white-pawn])
 
 (def empty-row (reduce #(assoc %1 %2 :empty) {} col-keys))
 
