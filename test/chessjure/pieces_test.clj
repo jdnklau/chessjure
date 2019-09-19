@@ -27,3 +27,33 @@
          (raw-piece :white-king)))
   (is (= :pawn
          (raw-piece :white-pawn))))
+
+(deftest piece-colour-test
+  (is (= :black
+         (piece-colour :black-rook)))
+  (is (= :black
+         (piece-colour :black-bishop)))
+  (is (= :black
+         (piece-colour :black-knight)))
+  (is (= :black
+         (piece-colour :black-queen)))
+  (is (= :black
+         (piece-colour :black-king)))
+  (is (= :black
+         (piece-colour :black-pawn)))
+  (is (= :white
+         (piece-colour :white-rook)))
+  (is (= :white
+         (piece-colour :white-bishop)))
+  (is (= :white
+         (piece-colour :white-knight)))
+  (is (= :white
+         (piece-colour :white-queen)))
+  (is (= :white
+         (piece-colour :white-king)))
+  (is (= :white
+         (piece-colour :white-pawn))))
+
+(deftest opposite-colour-test
+  (is (= :white (opposite-colour :black)))
+  (is (= :black (opposite-colour :white))))

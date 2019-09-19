@@ -24,3 +24,21 @@
     :white-queen :queen
     :white-king :king
     :white-pawn :pawn} coloured-piece))
+
+(defn piece-colour [coloured-piece]
+  ({:black-rook :black
+    :black-knight :black
+    :black-bishop :black
+    :black-queen :black
+    :black-king :black
+    :black-pawn :black
+    :white-rook :white
+    :white-knight :white
+    :white-bishop :white
+    :white-queen :white
+    :white-king :white
+    :white-pawn :white} coloured-piece))
+
+(defn opposite-colour [colour]
+  ({:white :black
+    :black :white} colour))
