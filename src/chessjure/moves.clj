@@ -54,48 +54,6 @@
       (nil? new-row) nil
       :else [new-col new-row])))
 
-(defn exceeding-edge? [[col row] [dx dy]]
-  (cond
-    (and (= col :a) (< dx 0)) true
-    (and (= col :h) (> dx 0)) true
-    (and (= row :1) (< dy 0)) true
-    (and (= row :8) (> dy 0)) true
-    :else false))
-
-(defn remaining-cols [col dx]
-  "Returns the remaining columns into the given direction.
-   `dx<0` yields smaller columns, `dx>0` yields greater columns.
-   For `dx=0`, the current column is returned. Otherwise it is always excluded."
-  (cond
-    (= dx 0) [col]
-    (< dx 0) (subvec col-keys 0 (col-index col))
-    (> dx 0) (subvec col-keys (inc (col-index col)))))
-
-(defn remaining-rows [row dy]
-  "Returns the remaining rowumns into the given direction.
-   `dy<0` yields smaller rowumns, `dy>0` yields greater rowumns.
-   For `dy=0`, the current rowumn is returned. Otherwise it is always excluded."
-  (cond
-    (= dy 0) [row]
-    (< dy 0) (subvec row-keys 0 (row-index row))
-    (> dy 0) (subvec row-keys (inc (row-index row)))))
-
-(defn count-cols [col dx]
-  "Returns the number of cols remaining into the given direction.
-   `dx<0` yields smaller columns, `dx>0` yields greater columns."
-  (let [idx (col-index col)]
-    (if (neg? dx)
-      idx
-      (- 7 idx))))
-
-(defn count-rows [row dy]
-  "Returns the number of rows remaining into the given direction.
-   `dy<0` yields smaller columns, `dy>0` yields greater columns."
-  (let [idx (row-index row)]
-    (if (neg? dy)
-      idx
-      (- 7 idx))))
-
 (defn sgn [x]
   "Returns the sign of an integer."
   (case
