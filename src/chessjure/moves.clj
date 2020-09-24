@@ -9,11 +9,6 @@
   (or (and (= row trow) (not= col tcol))
       (and (not= row trow) (= col tcol))))
 
-;; TODO: Implement movement in all directions
-;; Then sample all available tiles in desired directions
-;; base it on colour - what about king and check mate?
-;; Knight is special case
-
 (defn valid-move?
   "True if moving the piece on position `from` to `to` is a valid move.
    The positions are [row col] tuples."
@@ -75,3 +70,13 @@
         (nil? new-pos) result
         (not= :empty (board-get board new-pos)) (conj result new-pos)
         :else (recur new-pos (conj result new-pos))))))
+
+;; TODO:
+;; line-of-sight currently goes to next piece or edge.
+;; The next piece should only be included if it is of opposite colour
+;; and not a King.
+;;
+;; Knight movement is special case.
+;; Pawn capture is special case.
+;; Rochade is special case.
+;; What about check before mate?
