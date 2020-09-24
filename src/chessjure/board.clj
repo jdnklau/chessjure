@@ -13,19 +13,21 @@
 
 (defn board-put
   "Puts a given piece into the given position"
-  [board piece row col]
+  [board piece col row]
   (assoc-in board [row col] piece))
 
 (defn board-get
   "Returns the given piece from the board, or nil if position is empty."
-  [board row col]
-  (get-in board [row col]))
+  ([board [col row]]
+   (get-in board [row col]))
+  ([board col row]
+   (get-in board [row col])))
 
 (defn- position-pawns
   [board]
   (let
    [set-pawns (fn [board pawn row]
-                (reduce #(board-put %1 pawn row %2) board col-keys))]
+                (reduce #(board-put %1 pawn %2 row) board col-keys))]
     (-> board
         (set-pawns :white-pawn :2)
         (set-pawns :black-pawn :7))))
@@ -33,14 +35,14 @@
 (defn- position-opposite
   ([board white-piece black-piece col]
    (-> board
-       (board-put white-piece :1 col)
-       (board-put black-piece :8 col)))
+       (board-put white-piece  col :1)
+       (board-put black-piece  col :8)))
   ([board white-piece black-piece col1 col2]
    (-> board
-       (board-put white-piece :1 col1)
-       (board-put white-piece :1 col2)
-       (board-put black-piece :8 col1)
-       (board-put black-piece :8 col2))))
+       (board-put white-piece  col1 :1)
+       (board-put white-piece  col2 :1)
+       (board-put black-piece  col1 :8)
+       (board-put black-piece  col2 :8))))
 
 (def initial-board
   "Board with initial positioning of pieces"
