@@ -6,22 +6,24 @@
 (def row-keys
   [:1 :2 :3 :4 :5 :6 :7 :8])
 
-(def empty-row (reduce #(assoc %1 %2 :empty) {} col-keys))
+(def empty-col (reduce #(assoc %1 %2 :empty) {} row-keys))
 
 (def empty-board
-  (reduce #(assoc %1 %2 empty-row) {} row-keys))
+  (reduce #(assoc %1 %2 empty-col) {} col-keys))
 
 (defn board-put
   "Puts a given piece into the given position"
-  [board piece col row]
-  (assoc-in board [row col] piece))
+  ([board piece pos]
+   (assoc-in board pos piece))
+  ([board piece col row]
+   (assoc-in board [col row] piece)))
 
 (defn board-get
   "Returns the given piece from the board, or nil if position is empty."
-  ([board [col row]]
-   (get-in board [row col]))
+  ([board pos]
+   (get-in board pos))
   ([board col row]
-   (get-in board [row col])))
+   (get-in board [col row])))
 
 (defn- position-pawns
   [board]
