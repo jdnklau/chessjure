@@ -265,33 +265,3 @@
       #_(is (= #{[:a :7]}
                (possible-moves (test-with :white-king) [:a :8]))
             "cannot get close to other kings"))))
-
-(deftest move-rook
-  (testing "only rook"
-    (let [board (board-put empty-board :white-rook :d :4)]
-      (is (valid-move? board [:d :4] [:d :8])
-          "move up")
-      (is (valid-move? board [:d :4] [:d :1])
-          "move down")
-      (is (valid-move? board [:d :4] [:a :4])
-          "move left")
-      (is (valid-move? board [:d :4] [:g :4])
-          "move up")
-      (is (not (valid-move? board [:d :4] [:d :4]))
-          "do not keep still")
-      (is (not (valid-move? board [:d :4] [:e :6]))
-          "do no move like knight")))
-  (testing "rook with same-colour pieces around"
-    (let [board (-> empty-board
-                    (board-put :white-rook :d :4)
-                    (board-put :white-pawn :f :4)
-                    (board-put :white-pawn :d :6)
-                    (board-put :white-pawn :b :4)
-                    (board-put :white-pawn :d :2))]
-      (is (not (valid-move? board [:d :4] [:g :4]))
-          "don't pass right")))
-  (testing "cannot capture king directly"
-    (let [board (-> empty-board
-                    (board-put :black-king :d :4)
-                    (board-put :white-rook :d :1))]
-      (is (not (valid-move? board [:d :1] [:d :4]))))))

@@ -85,7 +85,12 @@
         ;; If a distinction based on colour is needed, it can be routed here.
         :white-pawn :white-pawn
         :black-pawn :black-pawn
+        :empty :empty ; No raw-piece equivalent.
         (raw-piece piece)))))
+
+(defmethod possible-moves :empty
+  [board [row col :as pos]]
+  #{})
 
 (defmethod possible-moves :rook
   [board [row col :as pos]]
@@ -148,13 +153,3 @@
             #{}
             (for [x [-1 0 1] y [-1 0 1]]
               [x y]))))
-
-;; FIXME: Maybe follow a directional approach with line-of-sight function
-;; so we do not need to calculate all possible moves for a piece but only
-;; possible moves into the indicated direction.
-;; Would then be a multimethod approach like the possible-moves function is.
-(defn valid-move? [board [col row :as pos] [tarcol tarrow :as target]]
-  ;; Do not capture kings directly.
-  (if (king? (board-get board target))
-    false
-    (contains? (possible-moves board pos) target)))
