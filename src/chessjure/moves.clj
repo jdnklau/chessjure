@@ -56,6 +56,24 @@
    (pos? x) 1
    :else 0))
 
+(defn- add-if-opp-colour [board colour other-piece-pos result]
+  (let [opp-colour (opposite-colour colour)
+        other-piece (piece-colour (board-get board other-piece-pos))]
+    (if (or (= opp-colour other-piece) (not colour)) ; Other piece has the opposite colour?
+      (conj result other-piece-pos)
+      result)))
+
+(def board (-> empty-board
+               (board-put :white-pawn :b :4)
+               (board-put :white-pawn :b :6)
+               (board-put :white-pawn :d :6)
+               (board-put :white-pawn :f :6)
+               (board-put :white-pawn :f :4)
+               (board-put :white-pawn :f :2)
+               (board-put :white-pawn :d :2)
+               (board-put :white-pawn :b :2)))
+(add-if-opp-colour board nil [:b :4] #{})
+
 (defn line-of-sight
   "Yields a set of all fields not hidden behind other pieces from a given board
    position's point of view.
@@ -63,13 +81,18 @@
    For `dx<0` the check follows towards lower columns, for `dx>0` higher columns.
    For `dy<0` the check follows towards lower rows, for `dy>0` higher rows."
   [board [col row :as pos] [dx dy :as dir]]
-  (loop [[c r] pos
-         result #{}]
-    (let [new-pos (add-to-pos [c r] [dx dy])]
-      (cond
-        (nil? new-pos) result
-        (not= :empty (board-get board new-pos)) (conj result new-pos)
-        :else (recur new-pos (conj result new-pos))))))
+  (let [this-colour (piece-colour (board-get board pos))]
+    (loop [[c r] pos
+           result #{}]
+      (let [new-pos (add-to-pos [c r] [dx dy])]
+        (cond
+          (nil? new-pos) result
+          (not= :empty (board-get board new-pos)) (add-if-opp-colour
+                                                   board
+                                                   this-colour
+                                                   new-pos
+                                                   result)
+          :else (recur new-pos (conj result new-pos)))))))
 
 ;; TODO:
 ;; line-of-sight currently goes to next piece or edge.
