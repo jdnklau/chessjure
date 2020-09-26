@@ -55,3 +55,11 @@
       (position-opposite :white-bishop :black-bishop :c :f)
       (position-opposite :white-queen :black-queen :d)
       (position-opposite :white-king :black-king :e)))
+
+(defn player-positions
+  "Returns set of a player's pieces' positions."
+  [board colour]
+  (into #{} (remove nil?
+                   (for [c col-keys r row-keys]
+                     (if (= colour (piece-colour (board-get board c r)))
+                       [c r])))))

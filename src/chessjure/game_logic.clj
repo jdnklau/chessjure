@@ -78,3 +78,17 @@
          (resolves-check? board
                           (piece-colour (board-get board pos))
                           pos target))))
+
+
+(defn check-mate?
+  [board colour]
+  (let [pieces (player-positions board colour)
+        pos-moves (map (comp (partial apply hash-map)
+                             #(vector % (possible-moves board %)))
+                       (player-positions board colour))]
+    (not (some true? (for [ms pos-moves
+                           from (keys ms)
+                           to (ms from)]
+                       (if (valid-move? board from to)
+                         true ; Valid move found
+                         nil))))))

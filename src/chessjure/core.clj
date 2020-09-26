@@ -1,5 +1,7 @@
 (ns chessjure.core
-  (:require [chessjure.board :refer :all])
+  (:require [chessjure.board :refer :all]
+            [chessjure.player :refer :all]
+            [chessjure.game-logic :refer :all])
   (:gen-class))
 
 (def piece-visuals
@@ -35,7 +37,7 @@
    :black-pawn   "♟"})
 
 (defn coloured-empty
-  [row col]
+  [col row]
   (let [row-even? (boolean (some #{:2 :4 :6 :8} [row]))
         in-even-blacks? (boolean (some #{:b :d :f :h} [col]))]
     (if (= row-even? in-even-blacks?)
@@ -43,15 +45,15 @@
       :white-empty)))
 
 (defn visualise-piece
-  [board row col]
-  (let [piece (get-in board [row col])]
+  [board col row]
+  (let [piece (get-in board [col row])]
     (piece-emoji (if (= piece :empty)
-                   (coloured-empty row col)
+                   (coloured-empty col row)
                    piece))))
 
 (defn visualise-row
   [board row]
-  (map str (map #(visualise-piece board row %1) col-keys)))
+  (map str (map #(visualise-piece board %1 row) col-keys)))
 
 (defn print-board
   [board]
@@ -62,5 +64,13 @@
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (print-board initial-board)
+  (loop [board initial-board]
+    (print-board board)
+    (if (check-mate? board :white)
+      (println ":black has won!")
+      (let [new-board (query-player board :white)]
+        (print-board new-board)
+        (if (check-mate? new-board :black)
+          (println ":white has won!")
+          (recur (query-player new-board :black))))))
   0)

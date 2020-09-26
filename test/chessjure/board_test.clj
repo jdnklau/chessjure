@@ -16,3 +16,19 @@
     (is (= :empty
            (board-get initial-board :d :4))
         "Retrieve empty position")))
+
+(deftest player-position-test
+  (is (= #{[:e :1] [:a :1]}
+         (player-positions (-> empty-board
+                               (board-put :white-pawn :e :1)
+                               (board-put :white-pawn :a :1)
+                               (board-put :black-pawn :b :1))
+                           :white))
+      "White's positions")
+  (is (= #{[:b :1]}
+         (player-positions (-> empty-board
+                               (board-put :white-pawn :e :1)
+                               (board-put :white-pawn :a :1)
+                               (board-put :black-pawn :b :1))
+                           :black))
+      "Blacks's positions"))

@@ -164,3 +164,27 @@
                               (board-put :white-rook :d :1))
                           [:d :3] [:e :3]))
         "cannot leave king unprotected")))
+
+(deftest check-mate-test
+  (is (check-mate? (-> empty-board
+                       (board-put :white-king :a :1)
+                       (board-put :black-king :h :8)
+                       (board-put :black-rook :h :2)
+                       (board-put :black-queen :b :2))
+                   :white)
+      "check mate for white")
+  (is (not (check-mate? (-> empty-board
+                            (board-put :white-king :a :1)
+                            (board-put :black-king :h :8)
+                            (board-put :black-rook :h :2)
+                            (board-put :black-queen :b :2))
+                        :black))
+      "no checkmate for black")
+  (is (not (check-mate? (-> empty-board
+                            (board-put :white-king :a :1)
+                            (board-put :black-king :h :8)
+                            (board-put :black-rook :h :2)
+                            (board-put :black-queen :b :2)
+                            (board-put :white-rook :b :8))
+                        :black))
+      "no checkmate for white if preventable"))
