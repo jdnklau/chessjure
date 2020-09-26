@@ -1,22 +1,7 @@
 (ns chessjure.moves
   (:require [chessjure.board :refer :all]
-            [chessjure.pieces :refer :all]))
-
-(defmulti valid-piece-move? (fn [board [row col] [trow tcol]]
-                              (raw-piece (board-get board row col))))
-
-(defmethod valid-piece-move? :rook [board [row col] [trow tcol]]
-  (or (and (= row trow) (not= col tcol))
-      (and (not= row trow) (= col tcol))))
-
-(defn valid-move?
-  "True if moving the piece on position `from` to `to` is a valid move.
-   The positions are [row col] tuples."
-  [board from to]
-  (valid-piece-move? board
-                     (apply board-get board from) ; from is a vector
-                     from
-                     to))
+            [chessjure.pieces :refer :all]
+            [clojure.set :as s]))
 
 (def col-index {:a 0
                 :b 1
@@ -92,3 +77,90 @@
 ;; Pawn capture is special case.
 ;; Rochade is special case.
 ;; What about check before mate?
+
+(defmulti possible-moves
+  (fn [board [row col :as pos]]
+    (let [piece (board-get board pos)]
+      (case piece
+        ;; If a distinction based on colour is needed, it can be routed here.
+        :white-pawn :white-pawn
+        :black-pawn :black-pawn
+        (raw-piece piece)))))
+
+(defmethod possible-moves :rook
+  [board [row col :as pos]]
+  (s/union (line-of-sight board pos [-1 0])
+           (line-of-sight board pos [0 -1])
+           (line-of-sight board pos [1 0])
+           (line-of-sight board pos [0 1])))
+
+(defmethod possible-moves :bishop
+  [board [row col :as pos]]
+  (s/union (line-of-sight board pos [-1 -1])
+           (line-of-sight board pos [1 -1])
+           (line-of-sight board pos [1 1])
+           (line-of-sight board pos [-1 1])))
+
+(defmethod possible-moves :queen
+  [board [row col :as pos]]
+  (s/union (line-of-sight board pos [-1 0])
+           (line-of-sight board pos [0 -1])
+           (line-of-sight board pos [1 0])
+           (line-of-sight board pos [0 1])
+           (line-of-sight board pos [-1 -1])
+           (line-of-sight board pos [1 -1])
+           (line-of-sight board pos [1 1])
+           (line-of-sight board pos [-1 1])))
+
+(defn- add-if-empty [board new-pos result]
+  (if (= :empty (board-get board new-pos))
+    (conj result new-pos)
+    result))
+
+(defmethod possible-moves :white-pawn
+  [board [row col :as pos]]
+  (s/union (add-if-opp-colour board :white (add-to-pos pos [-1 1]) #{})
+           (add-if-empty board (add-to-pos pos [0 1]) #{})
+           (add-if-opp-colour board :white (add-to-pos pos [1 1]) #{})))
+
+(defn- add-if-ok [board colour new-pos result]
+  (add-if-empty board
+                new-pos
+                (add-if-opp-colour board colour new-pos result)))
+
+(defmethod possible-moves :black-pawn
+  [board [row col :as pos]]
+  (s/union (add-if-opp-colour board :black (add-to-pos pos [-1 -1]) #{})
+           (add-if-empty board (add-to-pos pos [0 -1]) #{})
+           (add-if-opp-colour board :black (add-to-pos pos [1 -1]) #{})))
+
+(defmethod possible-moves :knight
+  [board [row col :as pos]]
+  (let [colour (piece-colour (board-get board pos))]
+    (reduce #(add-if-ok board colour (add-to-pos pos %2) %1)
+            #{}
+            [[-1 -2] [-1 2] [-2 -1] [-2 1] [1 -2] [1 2] [2 -1] [2 1]])))
+
+(defmethod possible-moves :king
+  [board [row col :as pos]]
+  (let [colour (piece-colour (board-get board pos))]
+    (reduce #(add-if-ok board colour (add-to-pos pos %2) %1)
+            #{}
+            (for [x [-1 0 1] y [-1 0 1]]
+              [x y]))))
+
+(defmulti valid-piece-move? (fn [board [row col] [trow tcol]]
+                              (raw-piece (board-get board row col))))
+
+(defmethod valid-piece-move? :rook [board [row col] [trow tcol]]
+  (or (and (= row trow) (not= col tcol))
+      (and (not= row trow) (= col tcol))))
+
+(defn valid-move?
+  "True if moving the piece on position `from` to `to` is a valid move.
+   The positions are [row col] tuples."
+  [board from to]
+  (valid-piece-move? board
+                     (apply board-get board from) ; from is a vector
+                     from
+                     to))
