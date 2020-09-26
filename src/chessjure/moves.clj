@@ -61,7 +61,7 @@
         other-piece (board-get board other-piece-pos)
         other-colour (piece-colour other-piece)]
     (if (or
-         (and (= opp-colour other-colour) (not (king? other-piece)))
+         (= opp-colour other-colour)
          (not colour)) ; Other piece has the opposite colour?
       (conj result other-piece-pos)
       result)))
