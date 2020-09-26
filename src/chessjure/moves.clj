@@ -58,21 +58,13 @@
 
 (defn- add-if-opp-colour [board colour other-piece-pos result]
   (let [opp-colour (opposite-colour colour)
-        other-piece (piece-colour (board-get board other-piece-pos))]
-    (if (or (= opp-colour other-piece) (not colour)) ; Other piece has the opposite colour?
+        other-piece (board-get board other-piece-pos)
+        other-colour (piece-colour other-piece)]
+    (if (or
+         (and (= opp-colour other-colour) (not (king? other-piece)))
+         (not colour)) ; Other piece has the opposite colour?
       (conj result other-piece-pos)
       result)))
-
-(def board (-> empty-board
-               (board-put :white-pawn :b :4)
-               (board-put :white-pawn :b :6)
-               (board-put :white-pawn :d :6)
-               (board-put :white-pawn :f :6)
-               (board-put :white-pawn :f :4)
-               (board-put :white-pawn :f :2)
-               (board-put :white-pawn :d :2)
-               (board-put :white-pawn :b :2)))
-(add-if-opp-colour board nil [:b :4] #{})
 
 (defn line-of-sight
   "Yields a set of all fields not hidden behind other pieces from a given board
@@ -95,9 +87,6 @@
           :else (recur new-pos (conj result new-pos)))))))
 
 ;; TODO:
-;; line-of-sight currently goes to next piece or edge.
-;; The next piece should only be included if it is of opposite colour
-;; and not a King.
 ;;
 ;; Knight movement is special case.
 ;; Pawn capture is special case.

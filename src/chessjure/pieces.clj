@@ -42,3 +42,9 @@
 (defn opposite-colour [colour]
   ({:white :black
     :black :white} colour))
+
+(defn king? [piece]
+  (case piece
+    :white-king true
+    :black-king true
+    false))

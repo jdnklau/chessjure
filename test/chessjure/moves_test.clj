@@ -154,4 +154,10 @@
       (is (= #{[:d :3]} (line-of-sight board [:d :4] [0 -1]))
           "to the bottom")
       (is (= #{[:c :3]} (line-of-sight board [:d :4] [-1 -1]))
-          "to the bottom left"))))
+          "to the bottom left")))
+  (testing "path blocked by king"
+    (let [board (-> empty-board
+                    (board-put :black-queen :d :4)
+                    (board-put :white-king :b :4))]
+      (is (= #{[:c :4]} (line-of-sight board [:d :4] [-1 0]))
+          "to the left"))))
