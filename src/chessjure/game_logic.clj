@@ -55,6 +55,14 @@
   [board colour]
   (attacked? board (find-king board colour) (opposite-colour colour)))
 
+(defn resolves-check?
+  "Checks whether the move from `piece-pos` to `target-pos` resolves
+   the in-check for the given player.
+   Also false if the player would get into check although he was not before."
+  [board colour piece-pos target-pos]
+  ;; Peek at following state and check whether in-check? remains true.
+  (not (in-check? (move board piece-pos target-pos) colour)))
+
 
 ;; FIXME: Maybe follow a directional approach with
 ;; moves/line-of-sight function
@@ -66,4 +74,7 @@
   ;; Do not capture kings directly.
   (if (king? (board-get board target))
     false
-    (contains? (possible-moves board pos) target)))
+    (and (contains? (possible-moves board pos) target)
+         (resolves-check? board
+                          (piece-colour (board-get board pos))
+                          pos target))))

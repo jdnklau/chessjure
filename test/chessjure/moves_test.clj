@@ -262,6 +262,20 @@
       (is (= #{[:g :3] [:g :5] [:h :3] [:h :4] [:h :5]}
              (possible-moves (test-with :white-king) [:g :4]))
           "some free spots")
+      ;; TODO:
       #_(is (= #{[:a :7]}
                (possible-moves (test-with :white-king) [:a :8]))
             "cannot get close to other kings"))))
+
+(deftest move-pieces
+  (testing "knight move"
+    (is (= (board-put empty-board :white-knight :e :6)
+           (move (board-put empty-board :white-knight :d :4)
+                 [:d :4] [:e :6]))
+        "move to empty field")
+    (is (= (board-put empty-board :white-knight :e :6)
+           (move (-> empty-board
+           (board-put :white-knight :d :4)
+           (board-put :black-pawn :e :6))
+                 [:d :4] [:e :6]))
+        "capture pawn")))

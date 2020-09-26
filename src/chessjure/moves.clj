@@ -153,3 +153,11 @@
             #{}
             (for [x [-1 0 1] y [-1 0 1]]
               [x y]))))
+
+(defn move
+  "Repositions a piece on the board"
+  [board piece-pos target-pos]
+  (let [piece (board-get board piece-pos)]
+    (-> board
+        (board-put :empty piece-pos)
+        (board-put piece target-pos))))

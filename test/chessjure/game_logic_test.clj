@@ -86,6 +86,42 @@
                       :white))
       "white not in check"))
 
+(deftest check-resolves
+  (is (resolves-check?
+       (-> empty-board
+           (board-put :white-king :d :4)
+           (board-put :black-rook :d :8))
+       :white [:d :4] [:e :4])
+      "moving king out of danger")
+  (is (not (resolves-check?
+            (-> empty-board
+                (board-put :white-king :d :4)
+                (board-put :black-rook :d :8))
+            :white [:d :4] [:d :5]))
+      "leaving king in danger")
+  (is (resolves-check?
+       (-> empty-board
+           (board-put :white-king :d :4)
+           (board-put :white-queen :e :4)
+           (board-put :black-rook :d :8))
+       :white [:e :4] [:d :5])
+      "blocking path")
+  (is (resolves-check?
+       (-> empty-board
+           (board-put :white-king :d :4)
+           (board-put :white-queen :e :8)
+           (board-put :black-rook :d :8))
+       :white [:e :8] [:d :8])
+      "capturing attacker")
+  (is (not (resolves-check?
+            (-> empty-board
+                (board-put :white-king :d :4)
+                (board-put :white-queen :e :5)
+                (board-put :black-rook :g :4)
+                (board-put :black-rook :d :8))
+            :white [:e :5] [:d :5]))
+      "only blocking one path"))
+
 (deftest move-rook
   (testing "only rook"
     (let [board (board-put empty-board :white-rook :d :4)]
@@ -114,4 +150,17 @@
     (let [board (-> empty-board
                     (board-put :black-king :d :4)
                     (board-put :white-rook :d :1))]
-      (is (not (valid-move? board [:d :1] [:d :4]))))))
+      (is (not (valid-move? board [:d :1] [:d :4])))))
+  (testing "movement under check"
+    (is (not (valid-move? (-> empty-board
+                              (board-put :black-king :d :4)
+                              (board-put :black-rook :f :3) ; move to d3  blocks attack
+                              (board-put :white-rook :d :1))
+                          [:f :3] [:e :3]))
+        "rook does not protect king after placement")
+    (is (not (valid-move? (-> empty-board
+                              (board-put :black-king :d :4)
+                              (board-put :black-rook :d :3) ; blocks from d1
+                              (board-put :white-rook :d :1))
+                          [:d :3] [:e :3]))
+        "cannot leave king unprotected")))
