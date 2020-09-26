@@ -149,18 +149,12 @@
             (for [x [-1 0 1] y [-1 0 1]]
               [x y]))))
 
-(defmulti valid-piece-move? (fn [board [row col] [trow tcol]]
-                              (raw-piece (board-get board row col))))
-
-(defmethod valid-piece-move? :rook [board [row col] [trow tcol]]
-  (or (and (= row trow) (not= col tcol))
-      (and (not= row trow) (= col tcol))))
-
-(defn valid-move?
-  "True if moving the piece on position `from` to `to` is a valid move.
-   The positions are [row col] tuples."
-  [board from to]
-  (valid-piece-move? board
-                     (apply board-get board from) ; from is a vector
-                     from
-                     to))
+;; FIXME: Maybe follow a directional approach with line-of-sight function
+;; so we do not need to calculate all possible moves for a piece but only
+;; possible moves into the indicated direction.
+;; Would then be a multimethod approach like the possible-moves function is.
+(defn valid-move? [board [col row :as pos] [tarcol tarrow :as target]]
+  ;; Do not capture kings directly.
+  (if (king? (board-get board target))
+    false
+    (contains? (possible-moves board pos) target)))
